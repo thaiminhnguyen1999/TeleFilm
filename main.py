@@ -6,8 +6,6 @@ import telebot
 from telebot import types
 import paypalrestsdk
 
-load_dotenv()
-
 # Set up logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
