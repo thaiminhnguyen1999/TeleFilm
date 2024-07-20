@@ -64,7 +64,7 @@ def get_exchange_rate():
     return data['rates']['USDCNH']['rate']  # USD to VND
 
 # Define command handlers
-@bot.message_handler(commands=['openapp'])
+@bot.message_handler(commands=['openapp', 'start'])
 def open_app(message):
     user = message.from_user
     msg = (
@@ -84,11 +84,6 @@ def open_app(message):
 @bot.message_handler(commands=['info'])
 def info(message):
     bot.send_message(message.chat.id, "TeleFilm (Phát triển bởi Nguyễn Thái Minh).\nPhiên bản: v1.0.1 Telegram dApp")
-
-@bot.message_handler(commands=['info_pkg_table'])
-def info_pkg_table(message):
-    with open('pkg_table.png', 'rb') as photo:
-        bot.send_photo(message.chat.id, photo)
 
 @bot.message_handler(commands=['donate'])
 def donate(message):
