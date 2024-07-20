@@ -1,10 +1,10 @@
 import os
 import logging
 import requests
-from dotenv import load_dotenv
+import streamlit as st
 import telebot
 from telebot import types
-import paypalrestsdk  # type: ignore
+import paypalrestsdk
 
 load_dotenv()
 
@@ -16,9 +16,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Define constants for PayPal configuration
-PAYPAL_MODE = 'live'  # 'live' if using real PayPal account
-PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
-PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
+PAYPAL_MODE = 'live'
+PAYPAL_CLIENT_ID = st.secrets["PAYPAL_CLIENT_ID"]
+PAYPAL_CLIENT_SECRET = st.secrets["PAYPAL_CLIENT_SECRET"]
 
 # Initialize PayPal SDK
 paypalrestsdk.configure({
@@ -31,7 +31,7 @@ paypalrestsdk.configure({
 FREE_FOREX_API_URL = 'https://www.freeforexapi.com/api/live'
 
 # Initialize bot
-bot = telebot.TeleBot(os.getenv("TELEGRAM_BOT_TOKEN"))
+bot = telebot.TeleBot(st.secrets["TELEGRAM_BOT_TOKEN"])
 
 # Define conversation states
 PAYMENT_AMOUNT, PAYMENT_CONFIRMATION, DONATE_CUSTOM, REGISTER, PACKAGE_CHOICE = range(5)
