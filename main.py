@@ -61,7 +61,7 @@ def create_payment(amount, currency, description):
 def get_exchange_rate():
     response = requests.get(f"{FREE_FOREX_API_URL}?pairs=USDCNH,USDVND")
     data = response.json()
-    return data['rates']['USDCNH']['rate']  # USD to VND
+    return data['rates']['USDVND']['rate']  # USD to VND
 
 # Define command handlers
 @bot.message_handler(commands=['start', 'openapp'])
@@ -120,20 +120,20 @@ def donate_custom(message):
     if amount_text.endswith('$'):
         amount = float(amount_text[:-1])
         currency = 'USD'
-        if amount < 0.5:
-            bot.send_message(message.chat.id, "Số tiền donate cần trên 0.5$. Vui lòng nhập lại.")
-            bot.register_next_step_handler(message, donate_custom)
-            return
     elif amount_text.endswith('VND'):
-        amount_vnd = float(amount_text[:-3])
-        if amount_vnd < 10000:
-            bot.send_message(message.chat.id, "Số tiền donate cần trên 10000 VND. Vui lòng nhập lại.")
-            bot.register_next_step_handler(message, donate_custom)
-            return
-        amount = amount_vnd / exchange_rate
+        amount = float(amount_text[:-3]) / exchange_rate  # Using live exchange rate
         currency = 'USD'
     else:
         bot.send_message(message.chat.id, "Định dạng số tiền không hợp lệ. Vui lòng nhập lại.")
+        bot.register_next_step_handler(message, donate_custom)
+        return
+    
+    if currency == 'USD' and amount < 0.5:
+        bot.send_message(message.chat.id, "Số tiền donate cần trên 0.5$. Vui lòng nhập lại.")
+        bot.register_next_step_handler(message, donate_custom)
+        return
+    elif currency == 'VND' and amount < (10000 / exchange_rate):
+        bot.send_message(message.chat.id, "Số tiền donate cần trên 10000VND. Vui lòng nhập lại.")
         bot.register_next_step_handler(message, donate_custom)
         return
     
@@ -188,12 +188,10 @@ def package_choice(message):
         if check_payment(payment):
             bot.send_message(message.chat.id, f"Thanh toán gói {package} thành công. Cảm ơn bạn đã đăng ký!", reply_markup=types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Xem phim", web_app=types.WebAppInfo("https://telefilm-dapp.glide.page"))))
         else:
-            bot.send_message(message.chat.id, "Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.")
+            bot.send_message(message.chat.id, f"Đăng kí gói {package} không thành công. Vui lòng thử lại.")
     else:
         bot.send_message(message.chat.id, "Có lỗi xảy ra trong quá trình tạo thanh toán. Vui lòng thử lại sau.")
 
-def main():
-    bot.infinity_polling()
-
+# Start bot
 if __name__ == '__main__':
-    main()
+    bot.polling(none_stop=True)
