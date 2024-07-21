@@ -64,7 +64,7 @@ def get_exchange_rate():
     return data['rates']['USDCNH']['rate']  # USD to VND
 
 # Define command handlers
-@bot.message_handler(commands=['openapp', 'start'])
+@bot.message_handler(commands=['start', 'openapp'])
 def open_app(message):
     user = message.from_user
     msg = (
@@ -120,8 +120,17 @@ def donate_custom(message):
     if amount_text.endswith('$'):
         amount = float(amount_text[:-1])
         currency = 'USD'
+        if amount < 0.5:
+            bot.send_message(message.chat.id, "Số tiền donate cần trên 0.5$. Vui lòng nhập lại.")
+            bot.register_next_step_handler(message, donate_custom)
+            return
     elif amount_text.endswith('VND'):
-        amount = float(amount_text[:-3]) / exchange_rate  # Using live exchange rate
+        amount_vnd = float(amount_text[:-3])
+        if amount_vnd < 10000:
+            bot.send_message(message.chat.id, "Số tiền donate cần trên 10000 VND. Vui lòng nhập lại.")
+            bot.register_next_step_handler(message, donate_custom)
+            return
+        amount = amount_vnd / exchange_rate
         currency = 'USD'
     else:
         bot.send_message(message.chat.id, "Định dạng số tiền không hợp lệ. Vui lòng nhập lại.")
