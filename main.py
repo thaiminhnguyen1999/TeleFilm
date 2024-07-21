@@ -129,11 +129,11 @@ def donate_custom(message):
         return
     
     if currency == 'USD' and amount < 0.5:
-        bot.send_message(message.chat.id, "Số tiền donate cần trên 0.5$. Vui lòng nhập lại.")
+        bot.send_message(message.chat.id, "Số tiền của bạn phải trên 0.5$. Vui lòng nhập lại.")
         bot.register_next_step_handler(message, donate_custom)
         return
     elif currency == 'VND' and amount < (10000 / exchange_rate):
-        bot.send_message(message.chat.id, "Số tiền donate cần trên 10000VND. Vui lòng nhập lại.")
+        bot.send_message(message.chat.id, "Số tiền của bạn phải trên 10000VND. Vui lòng nhập lại.")
         bot.register_next_step_handler(message, donate_custom)
         return
     
@@ -192,6 +192,5 @@ def package_choice(message):
     else:
         bot.send_message(message.chat.id, "Có lỗi xảy ra trong quá trình tạo thanh toán. Vui lòng thử lại sau.")
 
-# Start bot
 if __name__ == '__main__':
     bot.polling(none_stop=True)
