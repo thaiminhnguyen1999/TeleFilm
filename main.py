@@ -156,7 +156,7 @@ def check_payment(payment):
 
 @bot.message_handler(commands=['register'])
 def register(message):
-    with open('pkg_table.png', 'rb') as photo:
+    with open('pkg_table.jpg', 'rb') as photo:
         bot.send_photo(message.chat.id, photo)
     bot.send_message(message.chat.id, "Bạn muốn đăng kí gói nào (Xem bảng giá gói ở bên trên)?")
     bot.register_next_step_handler(message, package_choice)
